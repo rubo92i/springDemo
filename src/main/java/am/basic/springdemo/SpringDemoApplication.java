@@ -15,15 +15,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 public class SpringDemoApplication {
 
     public static void main(String[] args) {
-
-        CustomMailSender customMailSender = SpringApplication.run(SpringDemoApplication.class, args).getBean(CustomMailSender.class);
-
-        long start = System.currentTimeMillis();
-        log.info("Start ");
-        for (int i = 0; i < 1000; i++) {
-            customMailSender.sendMail("Test", "Hello " + i, "eduardhay2001@gmail.com");
-        }
-        log.info("1000 mails sent, duration : {}  seconds",(System.currentTimeMillis() -start)/1000);
+        SpringApplication.run(SpringDemoApplication.class, args)
     }
 
 
