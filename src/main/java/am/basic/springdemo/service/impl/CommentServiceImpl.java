@@ -4,6 +4,7 @@ import am.basic.springdemo.model.Comment;
 import am.basic.springdemo.repository.CommentRepository;
 import am.basic.springdemo.service.CommentService;
 import lombok.Data;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Async("taskExecutor2")
     public void deleteByUser(long commentId, long userId) {
         commentRepository.deleteByIdAndUserId(commentId,userId);
     }

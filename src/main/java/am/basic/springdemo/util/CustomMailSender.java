@@ -16,7 +16,7 @@ public class CustomMailSender {
     private JavaMailSender javaMailSender;
 
 
-    @Async
+    @Async("taskExecutor")     //this  method will work in separate tread , count of threads and another configurations depends from task executor configuration
     public void sendMail(String title, String content, String to) {
         try {
             SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
