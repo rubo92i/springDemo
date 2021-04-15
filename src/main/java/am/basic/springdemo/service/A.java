@@ -13,7 +13,7 @@ public class A {
 
 
     //this  method will work after 15 seconds  every second
-    @Scheduled(initialDelay =  15000 ,fixedRate = 1000)
+    @Scheduled(initialDelay =  15000 ,fixedRate = 1000000)
     public void test(){
        log.info("Scheduled is working");
     }
