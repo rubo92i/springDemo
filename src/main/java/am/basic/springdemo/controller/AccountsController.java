@@ -1,8 +1,8 @@
 package am.basic.springdemo.controller;
 
 
+import am.basic.springdemo.commons.model.ResponseException;
 import am.basic.springdemo.model.User;
-import am.basic.springdemo.model.excpetion.DuplicateDataException;
 import am.basic.springdemo.model.excpetion.ForbiddenException;
 import am.basic.springdemo.model.excpetion.NotFoundException;
 import am.basic.springdemo.service.UserService;
@@ -29,7 +29,7 @@ public class AccountsController {
     public ModelAndView start(@SessionAttribute(required = false) User user,
                               @CookieValue(required = false) String username,
                               @CookieValue(required = false) String password,
-                              HttpSession httpSession, HttpServletResponse response) {
+                              HttpSession httpSession, HttpServletResponse response) throws ResponseException {
 
 
         if (user != null) {
@@ -50,7 +50,7 @@ public class AccountsController {
     public ModelAndView login(@RequestParam(name = "user-i-name") String username,  //this part is get request parameters automatically, if one of parameter not exist it return 400 BAD REQUEST
                               @RequestParam(name = "user-i-pass") String password,
                               @RequestParam(required = false) String remember,  // in this case request param name and field name are same, and we can  miss parameter name in annotation, here we set required false, as it can be not sent;
-                              HttpSession session, HttpServletResponse resp) {
+                              HttpSession session, HttpServletResponse resp) throws ResponseException {
 
         try {
             User user = userService.signIn(username, password);
@@ -58,14 +58,6 @@ public class AccountsController {
             session.setAttribute("user", user);
             session.setMaxInactiveInterval(500000);
             return new ModelAndView("secure/home");  // model and view class has many constructor, this one is working only with view  , and redirect user to mentioned page after method
-
-        } catch (NotFoundException exception) {
-            return new ModelAndView("index", "message", exception.getMessage());  // this is forward to mentioned jsp with adding attribute to request, which name and value are 2-nd and 3-th params in constructor
-
-        } catch (ForbiddenException e) {
-            return new ModelAndView("verification")
-                    .addObject("message", "Please verify")
-                    .addObject("username", username);   // this is helpful in that cases when we have more then 1 attribute to forward
 
         } catch (RuntimeException throwable) {
             return new ModelAndView("index", "message", "Something went wrong , please try later");
@@ -79,7 +71,7 @@ public class AccountsController {
                          @RequestParam String surname,
                          @RequestParam String username,
                          @RequestParam String password,
-                          Model model) {
+                         Model model) throws ResponseException {
 
         User user = new User();
         user.setName(name);
@@ -91,8 +83,7 @@ public class AccountsController {
             model.addAttribute("username", username);
             model.addAttribute("message", "You have successfully registered, please verify");
             return "verification";
-        } catch (DuplicateDataException duplicateDataException) {
-            model.addAttribute("message", "User with such username already exists");
+
         } catch (RuntimeException throwable) {
             model.addAttribute("message", "Something went wrong , please try later");
         }

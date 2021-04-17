@@ -1,6 +1,7 @@
 package am.basic.springdemo.controller;
 
 
+import am.basic.springdemo.commons.model.ResponseException;
 import am.basic.springdemo.model.User;
 import am.basic.springdemo.model.dto.SignInDto;
 import am.basic.springdemo.model.excpetion.DuplicateDataException;
@@ -18,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Collections;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
@@ -30,19 +31,9 @@ public class AccountsRestController {
 
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody SignInDto signInDto) {
-
-        try {
-            User user = userService.signIn(signInDto.getUsername(), signInDto.getPassword());
-            return new ResponseEntity(user, HttpStatus.OK);
-        } catch (NotFoundException exception) {
-            return ResponseEntity.status(404).build();
-        } catch (ForbiddenException e) {
-            return ResponseEntity.status(403).body(Collections.singletonMap("message", "Please verify"));
-        } catch (RuntimeException throwable) {
-            return ResponseEntity.status(500).body("Internal server error");
-        }
-
+    public ResponseEntity login(@RequestBody @Valid SignInDto signInDto) throws  ResponseException {
+        User user = userService.signIn(signInDto.getUsername(), signInDto.getPassword());
+        return new ResponseEntity(user, HttpStatus.OK);
     }
 
 
@@ -51,7 +42,7 @@ public class AccountsRestController {
                          @RequestParam String surname,
                          @RequestParam String username,
                          @RequestParam String password,
-                         Model model) {
+                         Model model) throws ResponseException {
 
         User user = new User();
         user.setName(name);
@@ -63,8 +54,7 @@ public class AccountsRestController {
             model.addAttribute("username", username);
             model.addAttribute("message", "You have successfully registered, please verify");
             return "verification";
-        } catch (DuplicateDataException duplicateDataException) {
-            model.addAttribute("message", "User with such username already exists");
+
         } catch (RuntimeException throwable) {
             model.addAttribute("message", "Something went wrong , please try later");
         }

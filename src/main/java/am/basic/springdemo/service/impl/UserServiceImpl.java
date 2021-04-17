@@ -1,5 +1,6 @@
 package am.basic.springdemo.service.impl;
 
+import am.basic.springdemo.commons.model.ResponseException;
 import am.basic.springdemo.model.User;
 import am.basic.springdemo.model.excpetion.DuplicateDataException;
 import am.basic.springdemo.model.excpetion.ForbiddenException;
@@ -11,6 +12,7 @@ import am.basic.springdemo.util.Generator;
 import am.basic.springdemo.util.Status;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 
@@ -20,26 +22,24 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
 
-
     private final UserRepository userRepository;
 
     private final CustomMailSender customMailSender;
 
     @Override
-    public User signIn(String username, String password) throws NotFoundException, ForbiddenException {
+    public User signIn(String username, String password) throws ResponseException {
         User user = userRepository.getByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Wrong username or password"));
-        NotFoundException.check(!user.getPassword().equals(password), "Wrong username or password");
-        ForbiddenException.check(user.getStatus() == Status.UNVERIFIED, "Please verify");
+                .orElseThrow(() -> new ResponseException(HttpStatus.NOT_FOUND, "Wrong username or password"));
+        ResponseException.check(!user.getPassword().equals(password), HttpStatus.NOT_FOUND, "Wrong username or password");
+        ResponseException.check(user.getStatus() == Status.UNVERIFIED, HttpStatus.FORBIDDEN, "Please verify");
         return user;
     }
 
 
-
     @Override
-    public void signUp(User user) throws DuplicateDataException {
-        DuplicateDataException.check(
-                userRepository.getByUsername(user.getUsername()).isPresent(),
+    public void signUp(User user) throws ResponseException {
+        ResponseException.check(
+                userRepository.getByUsername(user.getUsername()).isPresent(),HttpStatus.CONFLICT,
                 "User with such username already exists");
         user.setStatus(Status.UNVERIFIED);
         user.setCode(Generator.getRandomDigits(5));

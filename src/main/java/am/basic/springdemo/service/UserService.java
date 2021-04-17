@@ -1,5 +1,6 @@
 package am.basic.springdemo.service;
 
+import am.basic.springdemo.commons.model.ResponseException;
 import am.basic.springdemo.model.User;
 import am.basic.springdemo.model.excpetion.DuplicateDataException;
 import am.basic.springdemo.model.excpetion.ForbiddenException;
@@ -8,9 +9,9 @@ import am.basic.springdemo.model.excpetion.NotFoundException;
 public interface UserService {
 
 
-    User signIn(String username, String password) throws NotFoundException, ForbiddenException;
+    User signIn(String username, String password) throws   ResponseException;
 
-    void signUp(User user) throws  DuplicateDataException;
+    void signUp(User user) throws   ResponseException;
 
     void verify(String username, String code) throws NotFoundException, ForbiddenException;
 
