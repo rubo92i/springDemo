@@ -3,6 +3,7 @@ package am.basic.springdemo.controller;
 import am.basic.springdemo.model.Role;
 import am.basic.springdemo.model.excpetion.NotFoundException;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -95,11 +96,20 @@ public class TestController {
 
     @GetMapping(value = "/test10/{fileName}")
     public ResponseEntity test10(@PathVariable String fileName) {
-        FileSystemResource fileSystemResource = new FileSystemResource(rootPath + fileName + "cvb");
+        FileSystemResource fileSystemResource = new FileSystemResource(rootPath + fileName);
         return ResponseEntity.ok()
                 .header("Content-Disposition", "inline; filename=" + fileName) // inline browser try to represent file  , attachment browser dowload th file
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(fileSystemResource);
+    }
+
+
+    @GetMapping(value = "/test/login")
+    public ResponseEntity test11() {
+        return ResponseEntity
+                .status(HttpStatus.PERMANENT_REDIRECT)
+                .header("location", "https://www.google.com")
+                .build();
     }
 
     private Map<String, String> convert(String text) {
