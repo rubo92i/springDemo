@@ -31,9 +31,12 @@ public class User {
 
     private int status;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "card_id",referencedColumnName = "id")
-    private Card card;
+
+
+//
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "card_id",referencedColumnName = "id")
+//    private Card card;
 
 //    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 //    @JoinColumn(name = "user_id",referencedColumnName = "id")

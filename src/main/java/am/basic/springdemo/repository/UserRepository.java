@@ -13,8 +13,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User,Long> {
 
 
-    @Query(value = "SELECT u FROM  User u where u.username = :username AND u.card.number = :number")
-    User getByUsernameJPQL(@Param("username") String s, @Param("number") String number);
+//    @Query(value = "SELECT u FROM  User u where u.username = :username AND u.card.number = :number")
+//    User getByUsernameJPQL(@Param("username") String s, @Param("number") String number);
 
 
     @Query(nativeQuery = true, value = "SELECT * FROM  user where username = :username ")

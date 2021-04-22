@@ -1,4 +1,4 @@
-package am.basic.springdemo.service;
+package am.basic.springdemo.old;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
