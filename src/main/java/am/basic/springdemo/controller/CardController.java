@@ -4,6 +4,7 @@ package am.basic.springdemo.controller;
 import am.basic.springdemo.commons.model.ResponseException;
 import am.basic.springdemo.config.SecurityContextProvider;
 import am.basic.springdemo.model.Card;
+import am.basic.springdemo.model.annoatations.SuccessResponseBody;
 import am.basic.springdemo.model.dto.PageResponse;
 import am.basic.springdemo.service.CardService;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,18 +35,19 @@ public class CardController {
     @PostMapping
     @ApiOperation(value = "Add card")
     @ApiResponses({
-            @ApiResponse(code = 200,message = "This mean that card successfully added"),
-            @ApiResponse(code = 409,message = "This mean that card with such number already exists")
+            @ApiResponse(code = 200, message = "This mean that card successfully added"),
+            @ApiResponse(code = 409, message = "This mean that card with such number already exists")
 
     })
-    public ResponseEntity<Card> add(@RequestBody @Valid   Card card) throws ResponseException {
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody Card add(@RequestBody @Valid Card card) throws ResponseException {
         card.setUserId(securityContextProvider.getByAuthentication().getId());
-        return ResponseEntity.ok(cardService.add(card));
+        return cardService.add(card);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Card> update(@PathVariable long id, @RequestBody @Valid Card card) throws ResponseException {
-        return ResponseEntity.ok(cardService.update(id, card, securityContextProvider.getByAuthentication().getId()));
+    public Card update(@PathVariable long id, @RequestBody @Valid Card card) throws ResponseException {
+        return cardService.update(id, card, securityContextProvider.getByAuthentication().getId());
     }
 
 
@@ -55,9 +58,9 @@ public class CardController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<PageResponse<Card>> getByUserId(@PageableDefault(size = 20) Pageable pageable) throws ResponseException {
-        Page<Card> cardPage = cardService.getByUserId(securityContextProvider.getByAuthentication().getId(),pageable);
-        return ResponseEntity.ok(new PageResponse<>(cardPage));
+    public @SuccessResponseBody(HttpStatus.OK) PageResponse<Card> getByUserId(@PageableDefault(size = 20) Pageable pageable) throws ResponseException {
+        Page<Card> cardPage = cardService.getByUserId(securityContextProvider.getByAuthentication().getId(), pageable);
+        return new PageResponse<>(cardPage);
     }
 
 }
