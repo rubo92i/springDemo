@@ -5,6 +5,8 @@ import am.basic.springdemo.model.Card;
 import am.basic.springdemo.repository.CardRepository;
 import am.basic.springdemo.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +54,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public List<Card> getByUserId(long userId) {
-        return cardRepository.getAllByUserId(userId);
+    public Page<Card> getByUserId(long userId, Pageable pageable) {
+        return cardRepository.findAllByUserId(userId,pageable);
     }
 }

@@ -1,4 +1,4 @@
-package am.basic.springdemo;
+package am.basic.springdemo.config;
 
 
 import am.basic.springdemo.model.User;
