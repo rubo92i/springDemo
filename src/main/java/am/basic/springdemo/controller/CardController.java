@@ -5,6 +5,7 @@ import am.basic.springdemo.commons.model.ResponseException;
 import am.basic.springdemo.config.SecurityContextProvider;
 import am.basic.springdemo.model.Card;
 import am.basic.springdemo.model.annoatations.SuccessResponseBody;
+import am.basic.springdemo.model.dto.CardSearchDto;
 import am.basic.springdemo.model.dto.PageResponse;
 import am.basic.springdemo.service.CardService;
 import io.swagger.annotations.ApiOperation;
@@ -60,6 +61,12 @@ public class CardController {
     @GetMapping("/list")
     public @SuccessResponseBody(HttpStatus.OK) PageResponse<Card> getByUserId(@PageableDefault(size = 20) Pageable pageable) throws ResponseException {
         Page<Card> cardPage = cardService.getByUserId(securityContextProvider.getByAuthentication().getId(), pageable);
+        return new PageResponse<>(cardPage);
+    }
+
+    @GetMapping("/search")
+    public  PageResponse<Card> search(@RequestBody CardSearchDto cardSearchDto, @PageableDefault(size = 20) Pageable pageable) throws ResponseException {
+        Page<Card> cardPage = cardService.search(cardSearchDto, pageable);
         return new PageResponse<>(cardPage);
     }
 

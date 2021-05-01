@@ -2,6 +2,8 @@ package am.basic.springdemo.service.impl;
 
 import am.basic.springdemo.commons.model.ResponseException;
 import am.basic.springdemo.model.Card;
+import am.basic.springdemo.model.dto.CardSearchDto;
+import am.basic.springdemo.model.specs.CardSpecification;
 import am.basic.springdemo.repository.CardRepository;
 import am.basic.springdemo.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 
 @Service
@@ -55,6 +55,11 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public Page<Card> getByUserId(long userId, Pageable pageable) {
-        return cardRepository.findAllByUserId(userId,pageable);
+        return cardRepository.findAllByUserId(userId, pageable);
+    }
+
+    @Override
+    public Page<Card> search(CardSearchDto cardSearchDto, Pageable pageable) {
+        return cardRepository.findAll(new CardSpecification(cardSearchDto), pageable);
     }
 }

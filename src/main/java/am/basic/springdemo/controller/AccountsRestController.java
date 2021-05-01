@@ -2,7 +2,10 @@ package am.basic.springdemo.controller;
 
 
 import am.basic.springdemo.commons.model.ResponseException;
+import am.basic.springdemo.commons.model.SearchRequest;
+import am.basic.springdemo.model.Card;
 import am.basic.springdemo.model.User;
+import am.basic.springdemo.model.dto.PageResponse;
 import am.basic.springdemo.model.dto.SignInDto;
 import am.basic.springdemo.model.excpetion.DuplicateDataException;
 import am.basic.springdemo.model.excpetion.ForbiddenException;
@@ -11,6 +14,9 @@ import am.basic.springdemo.service.UserService;
 import am.basic.springdemo.util.CookieUtil;
 import am.basic.springdemo.util.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -106,6 +112,13 @@ public class AccountsRestController {
         CookieUtil.deleteCookie("password", resp);
         session.invalidate();
         return "index";
+    }
+
+
+    @RequestMapping("/search")
+    public PageResponse<User> logout(@RequestBody SearchRequest searchRequest, @PageableDefault Pageable pageable) {
+        Page<User> cardPage = userService.search(searchRequest, pageable);
+        return new PageResponse<>(cardPage);
     }
 
 

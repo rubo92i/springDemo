@@ -1,8 +1,9 @@
 package am.basic.springdemo.service.impl;
 
+import am.basic.springdemo.commons.model.GenericSpecification;
 import am.basic.springdemo.commons.model.ResponseException;
+import am.basic.springdemo.commons.model.SearchRequest;
 import am.basic.springdemo.model.User;
-import am.basic.springdemo.model.excpetion.DuplicateDataException;
 import am.basic.springdemo.model.excpetion.ForbiddenException;
 import am.basic.springdemo.model.excpetion.NotFoundException;
 import am.basic.springdemo.repository.UserRepository;
@@ -12,6 +13,8 @@ import am.basic.springdemo.util.Generator;
 import am.basic.springdemo.util.Status;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void signUp(User user) throws ResponseException {
         ResponseException.check(
-                userRepository.getByUsername(user.getUsername()).isPresent(),HttpStatus.CONFLICT,
+                userRepository.getByUsername(user.getUsername()).isPresent(), HttpStatus.CONFLICT,
                 "User with such username already exists");
         user.setStatus(Status.UNVERIFIED);
         user.setCode(Generator.getRandomDigits(5));
@@ -73,6 +76,11 @@ public class UserServiceImpl implements UserService {
         ForbiddenException.check(!user.getPassword().equals(oldPassword), "wrong password");
         user.setPassword(newPassword);
         userRepository.save(user);
+    }
+
+    @Override
+    public Page<User> search(SearchRequest searchRequest, Pageable pageable) {
+        return userRepository.findAll(new GenericSpecification<User>(searchRequest.getCriteria()), pageable);
     }
 
 }
