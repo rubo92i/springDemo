@@ -1,8 +1,8 @@
-#### Card service
+#### Phone service
 ## Post
 
-# add card
-#url /card  POST
+# add Phone
+#url /Phone  POST
 request :
  
     { 
