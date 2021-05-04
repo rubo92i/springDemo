@@ -6,9 +6,12 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.security.RolesAllowed;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,12 +35,15 @@ public class TestController {
     }
 
 
+
+    @RolesAllowed("ROLE_ADMIN")
     @RequestMapping(value = "/test2")
     public ResponseEntity test2() {
         return ResponseEntity.status(404).body(new Role().withName("someRole").withId(1500));
     }
 
 
+    @RolesAllowed({"ROLE_ADMIN","ROLE_MODERATOR"})
     @RequestMapping(value = "/test3")
     public ResponseEntity test3(@RequestParam String param) {
         System.out.println(param);
@@ -52,6 +58,7 @@ public class TestController {
     }
 
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') and hasRole('ROLE_SYSADMIN')")
     @RequestMapping(value = "/test5")
     public ResponseEntity test5(@RequestBody String text) {
         System.out.println(text);
@@ -66,6 +73,7 @@ public class TestController {
     }
 
 
+    @Secured("ROLE_ADMIN")
     @GetMapping(value = "/test7")
     public ResponseEntity test7(@RequestParam String fileName) throws IOException {
         FileSystemResource fileSystemResource = new FileSystemResource(rootPath + fileName);
