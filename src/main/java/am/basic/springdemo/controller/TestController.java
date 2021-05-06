@@ -34,6 +34,18 @@ public class TestController {
         return ResponseEntity.status(404).body(map);
     }
 
+    @RolesAllowed("ROLE_USER")
+    @RequestMapping(value = "/test12")
+    public ResponseEntity test12() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "success");
+        map.put("resultText", "samo text");
+        map.put("resultInt", 15);
+        map.put("resultBoolean", false);
+        map.put("resultObject", new Role().withName("someRole").withId(1500));
+        return ResponseEntity.status(404).body(map);
+    }
+
 
 
     @RolesAllowed("ROLE_ADMIN")
@@ -64,6 +76,7 @@ public class TestController {
         System.out.println(text);
         return ResponseEntity.ok(convert(text));
     }
+
 
 
     @RequestMapping(value = "/test6")
