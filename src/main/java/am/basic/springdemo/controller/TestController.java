@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api")
 public class TestController {
 
 
@@ -46,6 +48,11 @@ public class TestController {
         return ResponseEntity.status(404).body(map);
     }
 
+
+    @RequestMapping(value = "/test13")
+    public ResponseEntity test13(Authentication authentication) {
+        return ResponseEntity.ok(authentication);
+    }
 
 
     @RolesAllowed("ROLE_ADMIN")
@@ -76,7 +83,6 @@ public class TestController {
         System.out.println(text);
         return ResponseEntity.ok(convert(text));
     }
-
 
 
     @RequestMapping(value = "/test6")

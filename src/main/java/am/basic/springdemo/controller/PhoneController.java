@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -41,26 +42,26 @@ public class PhoneController {
 
     })
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Phone add(@RequestBody @Valid Phone Phone) throws ResponseException {
-        Phone.setUserId(securityContextProvider.getByAuthentication().getId());
+    public @ResponseBody Phone add(@RequestBody @Valid Phone Phone, OAuth2Authentication oAuth2Authentication) throws ResponseException {
+        Phone.setUserId(securityContextProvider.getByAuthentication(oAuth2Authentication).getId());
         return PhoneService.add(Phone);
     }
 
     @PutMapping("/{id}")
-    public Phone update(@PathVariable long id, @RequestBody @Valid Phone Phone) throws ResponseException {
-        return PhoneService.update(id, Phone, securityContextProvider.getByAuthentication().getId());
+    public Phone update(@PathVariable long id, @RequestBody @Valid Phone Phone,  OAuth2Authentication oAuth2Authentication) throws ResponseException {
+        return PhoneService.update(id, Phone, securityContextProvider.getByAuthentication(oAuth2Authentication).getId());
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable long id) throws ResponseException {
-        PhoneService.delete(id, securityContextProvider.getByAuthentication().getId());
+    public ResponseEntity<Void> delete(@PathVariable long id ,  OAuth2Authentication oAuth2Authentication) throws ResponseException {
+        PhoneService.delete(id, securityContextProvider.getByAuthentication(oAuth2Authentication).getId());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/list")
-    public @SuccessResponseBody(HttpStatus.OK) PageResponse<Phone> getByUserId(@PageableDefault(size = 20) Pageable pageable) throws ResponseException {
-        Page<Phone> PhonePage = PhoneService.getByUserId(securityContextProvider.getByAuthentication().getId(), pageable);
+    public @SuccessResponseBody(HttpStatus.OK) PageResponse<Phone> getByUserId(@PageableDefault(size = 20) Pageable pageable,  OAuth2Authentication oAuth2Authentication) throws ResponseException {
+        Page<Phone> PhonePage = PhoneService.getByUserId(securityContextProvider.getByAuthentication(oAuth2Authentication).getId(), pageable);
         return new PageResponse<>(PhonePage);
     }
 

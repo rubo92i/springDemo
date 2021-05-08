@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -41,26 +42,26 @@ public class CardController {
 
     })
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Card add(@RequestBody @Valid Card card) throws ResponseException {
-        card.setUserId(securityContextProvider.getByAuthentication().getId());
+    public @ResponseBody Card add(@RequestBody @Valid Card card, OAuth2Authentication oAuth2Authentication) throws ResponseException {
+        card.setUserId(securityContextProvider.getByAuthentication(oAuth2Authentication).getId());
         return cardService.add(card);
     }
 
     @PutMapping("/{id}")
-    public Card update(@PathVariable long id, @RequestBody @Valid Card card) throws ResponseException {
-        return cardService.update(id, card, securityContextProvider.getByAuthentication().getId());
+    public Card update(@PathVariable long id, @RequestBody @Valid Card card,  OAuth2Authentication oAuth2Authentication) throws ResponseException {
+        return cardService.update(id, card, securityContextProvider.getByAuthentication(oAuth2Authentication).getId());
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable long id) throws ResponseException {
-        cardService.delete(id, securityContextProvider.getByAuthentication().getId());
+    public ResponseEntity<Void> delete(@PathVariable long id, OAuth2Authentication oAuth2Authentication) throws ResponseException {
+        cardService.delete(id, securityContextProvider.getByAuthentication(oAuth2Authentication).getId());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/list")
-    public @SuccessResponseBody(HttpStatus.OK) PageResponse<Card> getByUserId(@PageableDefault(size = 20) Pageable pageable) throws ResponseException {
-        Page<Card> cardPage = cardService.getByUserId(securityContextProvider.getByAuthentication().getId(), pageable);
+    public @SuccessResponseBody(HttpStatus.OK) PageResponse<Card> getByUserId(@PageableDefault(size = 20) Pageable pageable,OAuth2Authentication oAuth2Authentication) throws ResponseException {
+        Page<Card> cardPage = cardService.getByUserId(securityContextProvider.getByAuthentication(oAuth2Authentication).getId(), pageable);
         return new PageResponse<>(cardPage);
     }
 
